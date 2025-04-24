@@ -74,7 +74,8 @@ def train_model():
     logging.basicConfig(
         filename=log_path,
         level=logging.INFO,
-        format='%(message)s'
+        format='%(message)s',
+        filemode='w'  # Overwrite existing log file
     )
     
     # Training loop
@@ -108,12 +109,11 @@ def train_model():
             'acc': f'{100.*correct/total:.2f}%'
         })
     
-    # Print final accuracy
+    # Print and log final accuracy in a consistent format
     final_accuracy = 100. * correct / total
-    print(f'\nFinal Training Accuracy: {final_accuracy:.2f}%')
-    
-    # Log final accuracy
-    logging.info(f'Final Training Accuracy: {final_accuracy:.2f}%')
+    accuracy_str = f'Final Training Accuracy: {final_accuracy:.2f}%'
+    print(f'\n{accuracy_str}')
+    logging.info(accuracy_str)
     
     # Save trained model
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
