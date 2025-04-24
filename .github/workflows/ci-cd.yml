@@ -32,8 +32,8 @@ jobs:
     - name: Train and validate model
       run: |
         python train.py
-        # Check training accuracy
-        python -c "import re; with open('train.log', 'r') as f: log = f.read(); accuracy = float(re.search(r'Final Training Accuracy: ([\d.]+)%', log).group(1)); assert accuracy > 95, f'Model accuracy {accuracy}% is below required 95%'"
+        # Check training accuracy from train.log
+        python -c "import re; with open('train.log', 'r') as f: log = f.read(); accuracy = float(re.search(r'Final Training Accuracy: ([\d.]+)%', log).group(1)); assert accuracy > 95, f'Training accuracy {accuracy}% is below required 95%'"
     
     - name: Upload model
       uses: actions/upload-artifact@v4
