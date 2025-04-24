@@ -12,6 +12,7 @@ from torchvision.utils import save_image
 from model import MNISTModel
 import datetime
 from tqdm import tqdm
+import logging
 
 def train_model():
     """
@@ -67,6 +68,13 @@ def train_model():
     optimizer = optim.Adam(model.parameters(), lr=0.003)
     criterion = nn.CrossEntropyLoss()
     
+    # Set up logging
+    logging.basicConfig(
+        filename='train.log',
+        level=logging.INFO,
+        format='%(message)s'
+    )
+    
     # Training loop
     model.train()
     total = 0
@@ -101,6 +109,9 @@ def train_model():
     # Print final accuracy
     final_accuracy = 100. * correct / total
     print(f'\nFinal Training Accuracy: {final_accuracy:.2f}%')
+    
+    # Log final accuracy
+    logging.info(f'Final Training Accuracy: {final_accuracy:.2f}%')
     
     # Save trained model
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
