@@ -1,3 +1,4 @@
+import os
 import torch
 from torchvision import datasets, transforms
 from model import MNISTModel
@@ -19,13 +20,17 @@ def test_model_accuracy():
     model = test_model_architecture()
     model.eval()
     
+    # Create data directory if it doesn't exist
+    data_dir = os.path.join(os.getcwd(), 'data')
+    os.makedirs(data_dir, exist_ok=True)
+    
     # Load test data
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
     
-    test_dataset = datasets.MNIST('./data', train=False, download=True, transform=transform)
+    test_dataset = datasets.MNIST(data_dir, train=False, download=True, transform=transform)
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1000, shuffle=False)
     
     correct = 0

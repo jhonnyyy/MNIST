@@ -13,6 +13,7 @@ from model import MNISTModel
 import datetime
 from tqdm import tqdm
 import logging
+import os
 
 def train_model():
     """
@@ -68,9 +69,10 @@ def train_model():
     optimizer = optim.Adam(model.parameters(), lr=0.003)
     criterion = nn.CrossEntropyLoss()
     
-    # Set up logging
+    # Set up logging with absolute path
+    log_path = os.path.join(os.getcwd(), 'train.log')
     logging.basicConfig(
-        filename='train.log',
+        filename=log_path,
         level=logging.INFO,
         format='%(message)s'
     )
