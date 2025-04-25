@@ -1,5 +1,7 @@
 # MNIST ML Project with CI/CD
 
+![Build Status](https://github.com/yourusername/your-repo-name/actions/workflows/ci-cd.yml/badge.svg)
+
 This project implements a 3-layer DNN for MNIST classification with automated testing and deployment.
 
 ## Project Structure
