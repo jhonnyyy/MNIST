@@ -23,40 +23,51 @@ def train_model():
     # Set device (GPU if available)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Data augmentation pipeline
+    # ===== IMAGE AUGMENTATION PIPELINE =====
+    # This pipeline applies transformations to each image before training
     transform = transforms.Compose([
-        # Random rotation between -7 and 7 degrees
+        # 1. Random rotation: Rotate image between -7 and 7 degrees
         transforms.RandomRotation((-7.0, 7.0), fill=(1,)),
-        # Random scaling between 95% and 105%
+        
+        # 2. Random scaling: Scale image between 95% and 105% of original size
         transforms.RandomAffine(degrees=0, scale=(0.95, 1.05)),
-        # Random color adjustments
+        
+        # 3. Random color adjustments: Vary brightness, contrast, saturation, and hue
         transforms.ColorJitter(
-            brightness=0.10,
-            contrast=0.1,
-            saturation=0.10,
-            hue=0.1
+            brightness=0.10,  # Adjust brightness by ±10%
+            contrast=0.1,     # Adjust contrast by ±10%
+            saturation=0.10,  # Adjust saturation by ±10%
+            hue=0.1          # Adjust hue by ±10%
         ),
-        # Convert to tensor and normalize
+        
+        # 4. Convert PIL Image to tensor and normalize
         transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,))
+        transforms.Normalize((0.1307,), (0.3081,))  # MNIST mean and std
     ])
     
-    # Load and prepare training data
+    # ===== LOAD AND PREPARE TRAINING DATA =====
+    # Create dataset with augmentation pipeline
     train_dataset = datasets.MNIST(
         './data',
         train=True,
         download=True,
-        transform=transform
+        transform=transform  # Apply augmentation pipeline
     )
+    
+    # Create data loader with batch size 64
     train_loader = DataLoader(
         train_dataset,
         batch_size=64,
         shuffle=True
     )
     
-    # Save sample of augmented images
+    # ===== SAVE AUGMENTED IMAGE SAMPLES =====
+    # Get first batch of augmented images
     images, _ = next(iter(train_loader))
-    save_image(images, 'transformed_batch.jpg')
+    
+    # Save the batch as a grid of 8x8 images (64 total)
+    # Each image will show different augmentations
+    save_image(images, 'transformed_batch.jpg', nrow=8, padding=2)
     
     # Initialize model and move to device
     model = MNISTModel().to(device)

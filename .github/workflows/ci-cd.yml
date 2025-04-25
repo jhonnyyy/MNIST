@@ -22,12 +22,32 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install pytest
     
     - name: Run model tests
       run: |
-        python test.py
+        # Run all tests using pytest with verbose output
+        pytest test.py -v
+        
+        # Additional checks
+        python -c "
+        import torch
+        from model import MNISTModel
+        
         # Check parameter count
-        python -c "from model import MNISTModel; model = MNISTModel(); total_params = sum(p.numel() for p in model.parameters()); assert total_params < 25000, f'Model has {total_params} parameters, exceeding 25000 limit'"
+        model = MNISTModel()
+        total_params = sum(p.numel() for p in model.parameters())
+        assert total_params < 25000, f'Model has {total_params} parameters, exceeding 25000 limit'
+        
+        # Check model architecture
+        test_input = torch.randn(1, 1, 28, 28)
+        output = model(test_input)
+        assert output.shape == (1, 10), 'Output shape mismatch'
+        
+        # Check output range
+        assert torch.all(output <= 0), 'Outputs should be log probabilities'
+        assert torch.all(torch.isclose(torch.exp(output).sum(dim=1), torch.ones(1))), 'Probabilities should sum to 1'
+        "
     
     - name: Train and validate model
       run: |
